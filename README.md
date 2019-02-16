@@ -33,3 +33,6 @@ comparisons.
 outliers. This is correct, the valence values of Debut range from 0.127 to 0.815... This may in turn indicate that people like more
 consistent albums, which are either (very) happy or (very) sad.
 
+
+
+Hoi lalallalalal
