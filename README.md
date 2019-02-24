@@ -36,3 +36,9 @@ consistent albums, which are either (very) happy or (very) sad.
 
 
 Hoi lalallalalal
+
+
+
+git config --global user.email "mebee@DESKTOP-4GHR99R"
+git config --global user.name "Marjolein Beemster"
+
