@@ -1,5 +1,5 @@
 ---
-title: Brain Eno
+title: 'Brain Eno'
 output:
   flexdashboard::flex_dashboard:
     orientation: columns
@@ -10,11 +10,7 @@ output:
 ### Introduction
 The man you probably heard of, either as synth man in Roxy music or as U2 producer. Brain Eno has certainly left his hark in the music industry. Not only has he produced very many albums, he even created a new music genre; ambient.
 
-***
-
 Since he has his own ways of producing (giving cards with random words on them to the U2 band members, to tell them how to sing and play). I decided to compare his solo work with his work as a producer, to see what his influences are in the work of albums he produced for certain bands. He produced music for several artists, but I am going to focus on Coldplay, U2, Devo, David Bowie, Genesis and the Talking Head. Because I think these bands had the most commercial success with their music produced under Eno.
-
-***
 
 I created two playlists. One of his solowork, consisting of only solo albums, ranging from art-/experimental rock-ish music, to ambient (to which he now still sticks). And one of alle the albums he produced with the aformentioned artists/bands.
 
