@@ -11,8 +11,7 @@ output:
 library(tidyverse)
 library(plotly)
 library(spotifyr)
-Sys.setenv(SPOTIFY_CLIENT_ID = '97a37ff104ba4695848b53508ecd7e26')
-Sys.setenv(SPOTIFY_CLIENT_SECRET = '22cdb68deb4045158c5073e640cdd753')
+source(file='spotify.R')
 ```
 
 ### Introduction
