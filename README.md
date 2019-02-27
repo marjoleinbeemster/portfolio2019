@@ -7,6 +7,14 @@ output:
     storyboard: true
 ---
 
+```{r, cache = FALSE}
+library(tidyverse)
+library(plotly)
+library(spotifyr)
+Sys.setenv(SPOTIFY_CLIENT_ID = '97a37ff104ba4695848b53508ecd7e26')
+Sys.setenv(SPOTIFY_CLIENT_SECRET = '22cdb68deb4045158c5073e640cdd753')
+```
+
 ### Introduction
 The man you probably heard of, either as synth man in Roxy music or as U2 producer. Brain Eno has certainly left his hark in the music industry. Not only has he produced very many albums, he even created a new music genre; ambient.
 
