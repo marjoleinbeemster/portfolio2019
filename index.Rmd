@@ -11,6 +11,8 @@ output:
 library(tidyverse)
 library(plotly)
 library(spotifyr)
+library(dplyr)
+library(ggplot2)
 source(file='spotify.R')
 ```
 
@@ -22,10 +24,25 @@ Since he has his own ways of producing (giving cards with random words on them t
 I created two playlists. One of his solowork, consisting of only solo albums, ranging from art-/experimental rock-ish music, to ambient (to which he now still sticks). And one of alle the albums he produced with the aformentioned artists/bands.
 
 ### Characteristics
-Some first characteristics
+
+```{r, echo=FALSE}
+enoproducer <- get_playlist_audio_features('21sm2glgseqq6otym3iwfbwsa', '0TEl4LaLPMjr7qPta5Z9pW')
+enosolo <- get_playlist_audio_features('21sm2glgseqq6otym3iwfbwsa', '57ZXLIpoMu7mY8jWlWnCQl')
+
+enoproducer %>% summarise(M = mean(valence), SD = sd(valence))
+enosolo %>% summarise(M = mean(valence), SD = sd(valence))
+
+enoproducer %>% summarise(mean = mean(energy), SD = sd(energy))
+enosolo %>% summarise(M = mean(energy), SD = sd(energy))
+```
+When first analysing the music, I decided to take a look at valence and energy.
+It is very striking that the valence and energy of Eno's solo work (0.23 and 0.24) are a lot lower than that of his work as a producer (0.47 and 0.66).
 
 ### Findings
-Some first findings
-
-graph
+```{r}
+enoproducer %>% ggplot(aes(x = valence, y = energy)) + geom_point() + geom_smooth() + ggtitle('Eno producer')
+enosolo %>% ggplot(aes(x = valence, y = energy)) + geom_point() + geom_smooth() + ggtitle('Eno solo')
+```
+***
+You can see these details visualised here. Every point represents a song. You can see that a lot of songs from his solo work are concentrated in the bottom left corner of the graph. Meaning low valence and energy (also known as 'sad' songs). Most songs he produces are found in the upper half of the graph, meaning they are eiter 'angry' (top left corner) or 'happy' (top right corner).
 
