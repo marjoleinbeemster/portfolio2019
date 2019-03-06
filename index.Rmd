@@ -13,6 +13,7 @@ library(plotly)
 library(spotifyr)
 library(dplyr)
 library(ggplot2)
+library(compmus)
 source(file='spotify.R')
 ```
 
@@ -40,9 +41,70 @@ It is very striking that the valence and energy of Eno's solo work (0.23 and 0.2
 
 ### Findings
 ```{r}
-enoproducer %>% ggplot(aes(x = valence, y = energy)) + geom_point() + geom_smooth() + ggtitle('Eno producer')
-enosolo %>% ggplot(aes(x = valence, y = energy)) + geom_point() + geom_smooth() + ggtitle('Eno solo')
+eno <-
+    enoproducer %>% mutate(playlist = "Producer") %>%
+    bind_rows(enosolo %>% mutate(playlist = "Solo"))
+
+label_enotable <-
+    tibble(
+        label = c("Remain in Light (TH)", "Another Green World"),
+        playlist = c("Producer", "Solo"),
+        valence = c(0.9630, 0.1580),
+        energy = c(0.7630, 0.260000),
+    )
+
+eno %>%                       # Start with awards.
+    ggplot(                      # Set up the plot.
+        aes(
+            x = valence,
+            y = energy,
+            size = loudness,
+            colour = mode
+        )
+    ) +
+    geom_point() +               # Scatter plot.
+    geom_rug(size = 0.1) +       # Add 'fringes' to show data distribution.
+    geom_text(                   # Add text labels from above.
+        aes(
+            x = valence,
+            y = energy,
+            label = label),
+        colour = "black",        # Override colour (not mode here).
+        size = 3,                # Override size (not loudness here).
+        data = label_enotable,     # Specify the data source for labels.
+        hjust = "left",          # Align left side of label with the point.
+        vjust = "bottom",        # Align bottom of label with the point.
+        nudge_x = -0.30,         # Nudge the label slightly left.
+        nudge_y = 0.02           # Nudge the label slightly up.
+    ) +
+    facet_wrap(~ playlist) +     # Separate charts per playlist.
+    scale_x_continuous(          # Fine-tune the x axis.
+        limits = c(0, 1),
+        breaks = c(0, 0.50, 1),  # Use grid-lines for quadrants only.
+        minor_breaks = NULL      # Remove 'minor' grid-lines.
+    ) +
+    scale_y_continuous(          # Fine-tune the y axis in the same way.
+        limits = c(0, 1),
+        breaks = c(0, 0.50, 1),
+        minor_breaks = NULL
+    ) +
+    scale_colour_brewer(         # Use the Color Brewer to choose a palette.
+        type = "qual",           # Qualitative set.
+        palette = "Paired"       # Name of the palette is 'Paired'.
+    ) +
+    scale_size_continuous(       # Fine-tune the sizes of each point.
+        trans = "exp",           # Use an exp transformation to emphasise loud.
+        guide = "none"           # Remove the legend for size.
+    ) +
+    theme_light() +              # Use a simpler them.
+    labs(                        # Make the titles nice.
+        x = "Valence",
+        y = "Energy",
+        colour = "Mode"
+    )
 ```
+
 ***
+
 You can see these details visualised here. Every point represents a song. You can see that a lot of songs from his solo work are concentrated in the bottom left corner of the graph. Meaning low valence and energy (also known as 'sad' songs). Most songs he produces are found in the upper half of the graph, meaning they are eiter 'angry' (top left corner) or 'happy' (top right corner).
 
