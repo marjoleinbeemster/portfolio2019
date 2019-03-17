@@ -1,5 +1,5 @@
 ---
-title: 'Brain Eno'
+title: 'Brian Eno'
 output:
   flexdashboard::flex_dashboard:
     orientation: columns
@@ -22,7 +22,7 @@ The man you probably heard of, either as synth man in Roxy music or as U2 produc
 
 Since he has his own ways of producing (giving cards with random words on them to the U2 band members, to tell them how to sing and play). I decided to compare his solo work with his work as a producer, to see what his influences are in the work of albums he produced for certain bands. He produced music for several artists, but I am going to focus on Coldplay, U2, Devo, David Bowie, Genesis and the Talking Head. Because I think these bands had the most commercial success with their music produced under Eno.
 
-I created two playlists. One of his solowork, consisting of only solo albums, ranging from art-/experimental rock-ish music, to ambient (to which he now still sticks). And one of alle the albums he produced with the aformentioned artists/bands.
+I created two playlists. One of his solowork, consisting of only solo albums, ranging from art-/experimental rock-ish music, to ambient (to which he now still sticks). And one of all the albums he produced with the aformentioned artists/bands.
 
 ### Characteristics
 
@@ -90,7 +90,7 @@ eno %>%                       # Start with awards.
     ) +
     scale_colour_brewer(         # Use the Color Brewer to choose a palette.
         type = "div",           # Qualitative set.
-        palette = "PRGn"       # Name of the palette is 'Paired'.
+        palette = "RdBu"       # Name of the palette is 'Paired'.
     ) +
     scale_size_continuous(       # Fine-tune the sizes of each point.
         trans = "exp",           # Use an exp transformation to emphasise loud.
@@ -172,7 +172,7 @@ compmus_long_distance(
 
 Text lalala
 
-###Cepstograms and self-similarity
+###Cepstograms and self-similarity solo work
 
 ```{r}
 AGW2 <- 
@@ -236,6 +236,8 @@ AGW2 %>%
     theme_classic() +
     labs(x = '', y = '')
 ```
+
+###Cepstograms and self-similarity producer
 
 ```{r}
 RIL2 %>% 
