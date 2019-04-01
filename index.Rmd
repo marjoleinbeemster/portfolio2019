@@ -14,43 +14,42 @@ library(spotifyr)
 library(dplyr)
 library(ggplot2)
 library(compmus)
+library(grid)
+library(gridExtra)
+library(lattice)
 source(file='spotify.R')
 ```
 
 ### Introduction
-The man you probably heard of, either as synth man in Roxy music or as U2 producer. Brain Eno has certainly left his hark in the music industry. Not only has he produced very many albums, he even created a new music genre; ambient.
+
+![Brian Eno](./brianeno.jpg)
+
+***
+
+The man you probably heard of, either as synth man in Roxy music or as U2 producer. Brain Eno has certainly left his hark in the music industry. Not only has he produced very many albums, he even created a new music genre; ambient, in which the creation of soundscapes transcends making musically correct compositions.
 
 Since he has his own ways of producing (giving cards with random words on them to the U2 band members, to tell them how to sing and play). I decided to compare his solo work with his work as a producer, to see what his influences are in the work of albums he produced for certain bands. He produced music for several artists, but I am going to focus on Coldplay, U2, Devo, David Bowie, Genesis and the Talking Head. Because I think these bands had the most commercial success with their music produced under Eno.
 
-I created two playlists. One of his solowork, consisting of only solo albums, ranging from art-/experimental rock-ish music, to ambient (to which he now still sticks). And one of all the albums he produced with the aformentioned artists/bands.
+I created two playlists. One of his solowork, consisting of only solo albums, ranging from art-/experimental rock-ish music, to ambient (to which he now still sticks). And one of all the albums he produced with the aformentioned artists/bands.Two songs will be used mainly throughout the analysis: Another Green World (solowork - 1:41 min) and Houses In Motion - Talking Heads (work as a producer - 4:33 min). These songs I have chosen because I think these represent the corpi the best, since they show very opposite values in valence and energy (see the 'characteristics' tab).
+
 
 ### Characteristics
 
-```{r, echo=FALSE}
+```{r, fig.width=15}
+
 enoproducer <- get_playlist_audio_features('21sm2glgseqq6otym3iwfbwsa', '0TEl4LaLPMjr7qPta5Z9pW')
 enosolo <- get_playlist_audio_features('21sm2glgseqq6otym3iwfbwsa', '57ZXLIpoMu7mY8jWlWnCQl')
 
-enoproducer %>% summarise(M = mean(valence), SD = sd(valence))
-enosolo %>% summarise(M = mean(valence), SD = sd(valence))
-
-enoproducer %>% summarise(mean = mean(energy), SD = sd(energy))
-enosolo %>% summarise(M = mean(energy), SD = sd(energy))
-```
-When first analysing the music, I decided to take a look at valence and energy.
-It is very striking that the valence and energy of Eno's solo work (0.23 and 0.24) are a lot lower than that of his work as a producer (0.47 and 0.66).
-
-### Findings
-```{r, fig.width=15}
 eno <-
     enoproducer %>% mutate(playlist = "Producer") %>%
     bind_rows(enosolo %>% mutate(playlist = "Solo"))
 
 label_enotable <-
     tibble(
-        label = c("Remain in Light (TH)", "Another Green World"),
+        label = c("Houses in Motion (TH)", "Another Green World"),
         playlist = c("Producer", "Solo"),
         valence = c(0.9630, 0.1580),
-        energy = c(0.7630, 0.260000),
+        energy = c(0.7630, 0.260000)
     )
 
 eno %>%                       # Start with awards.
@@ -89,8 +88,8 @@ eno %>%                       # Start with awards.
         minor_breaks = NULL
     ) +
     scale_colour_brewer(         # Use the Color Brewer to choose a palette.
-        type = "div",           # Qualitative set.
-        palette = "RdBu"       # Name of the palette is 'Paired'.
+        type = "qua",           # Qualitative set.
+        palette = "Accent"       # Name of the palette is 'Paired'.
     ) +
     scale_size_continuous(       # Fine-tune the sizes of each point.
         trans = "exp",           # Use an exp transformation to emphasise loud.
@@ -106,9 +105,10 @@ eno %>%                       # Start with awards.
 
 ***
 
-You can see these details visualised here. Every point represents a song. You can see that a lot of songs from his solo work are concentrated in the bottom left corner of the graph. Meaning low valence and energy (also known as 'sad' songs). Most songs he produces are found in the upper half of the graph, meaning they are eiter 'angry' (top left corner) or 'happy' (top right corner).
+When first analysing the music, I decided to take a look at valence and energy.It is very striking that the valence (mean +/- SD: 0.226 +/- 0.244) and energy (0.245 +/- 0.241) of Eno's solo work are a lot lower than that of his work as a producer (valence: 0.471 +/- 0.267, energy: 0.656 +/- 0.209).
+You can see these details visualised here. Every point represents a song. You can see that a lot of songs from his solo work are concentrated in the bottom left corner of the graph. Meaning low valence and energy (also known as 'sad' songs). Most songs he produces are found in the upper half of the graph, meaning they are eiter 'angry' (top left corner) or 'happy' (top right corner). The size of the dots stand for loudness, so we can also state that his work as a producer overall has higher loudness than his solo work.
 
-### Chromagrams
+### Chromagram Another Green World
 
 ```{r}
 AGW <- 
@@ -129,6 +129,13 @@ AGW %>%
     labs(x = 'Time (s)', y = NULL, fill = 'Magnitude') +
     theme_minimal()
 ```
+
+***
+
+In the chromagram of 'Another Green World' we can see a rather distinctive key-pattern. Switching between F sharp and G sharp. This seems like a logical thing, since the song is in C sharp and the F sharp are the fourth and fifth in that key. The 1-4-5 pattern is much seen in music in general. 
+
+### Chromagram Houses In Motion (Talking Heads)
+
 ```{r}
 RIL <- 
     get_tidy_audio_analysis('2FkJ8X6a1prYSYIdaEUItJ') %>% 
@@ -149,30 +156,11 @@ RIL %>%
     theme_minimal()
 ```
 
-```{r}
-compmus_long_distance(
-    AGW %>% mutate(pitches = map(pitches, compmus_normalise, 'chebyshev')),
-    RIL %>% mutate(pitches = map(pitches, compmus_normalise, 'chebyshev')),
-    feature = pitches,
-    method = 'euclidean') %>% 
-    ggplot(
-        aes(
-            x = xstart + xduration / 2, 
-            width = xduration,
-            y = ystart + yduration / 2,
-            height = yduration,
-            fill = d)) + 
-    geom_tile() +
-    scale_fill_continuous(type = 'viridis', guide = "none") +
-    labs(x = 'Another Green World (Brian Eno)', y = 'Remain in the Light (Talking Heads)') +
-    theme_minimal()
-```
-
 ***
 
-Text lalala
+The chromagram of Houses in Motion from the Talking Heads has a much less distinctive form as the chromagram of Another Green world. The key pattern that stands out here is A, F sharp, D. It is likely that this song is in D, since the D major chord is formed D-Fsharp-A.
 
-###Cepstograms and self-similarity solo work
+###Cepstograms and self-similarity Another Green World
 
 ```{r}
 AGW2 <- 
@@ -207,7 +195,7 @@ RIL2 <-
 ```
 
 ```{r}
-AGW2 %>% 
+hoi1 <- AGW2 %>% 
     compmus_gather_timbre %>% 
     ggplot(
         aes(
@@ -219,9 +207,8 @@ AGW2 %>%
     labs(x = 'Time (s)', y = NULL, fill = 'Magnitude') +
     scale_fill_viridis_c(option = 'E') +
     theme_classic()
-```
-```{r}
-AGW2 %>% 
+
+hoi2 <- AGW2 %>% 
     compmus_self_similarity(timbre, 'cosine') %>% 
     ggplot(
         aes(
@@ -235,49 +222,54 @@ AGW2 %>%
     scale_fill_viridis_c(option = 'E', guide = 'none') +
     theme_classic() +
     labs(x = '', y = '')
-```
 
-###Cepstograms and self-similarity producer
-
-```{r}
-RIL2 %>% 
-    compmus_gather_timbre %>% 
-    ggplot(
-        aes(
-            x = start + duration / 2, 
-            width = duration, 
-            y = basis, 
-            fill = value)) + 
-    geom_tile() +
-    labs(x = 'Time (s)', y = NULL, fill = 'Magnitude') +
-    scale_fill_viridis_c(option = 'E') +
-    theme_classic()
-```
-```{r}
-RIL2 %>% 
-    compmus_self_similarity(timbre, 'cosine') %>% 
-    ggplot(
-        aes(
-            x = xstart + xduration / 2, 
-            width = xduration,
-            y = ystart + yduration / 2,
-            height = yduration,
-            fill = d)) + 
-    geom_tile() +
-    coord_fixed() +
-    scale_fill_viridis_c(option = 'E', guide = 'none') +
-    theme_classic() +
-    labs(x = '', y = '')
+grid.arrange(hoi1, hoi2, ncol=2)
 ```
 
 ***
 
-First: Another Green World (Brian Eno)
-Second: Remain in Light (Talking Heads)
+Here you can see the cepstogram and the self-similarity matrix of Another Green world. You can see that patterns are really vague in the cepstogram and that not even any pattern is there in the self-similarity matrix. This means that this song has not any returning elements or repeating riffs. This is very caracteristic for ambient music, creation of a soundscape while not really committing to any musical patterns such as choruses and verses.
 
-You can see that Remain in Light has a much clearer checkerboard pattern which indicates that this song has a much clearer build-up than the ambient song 'another green world', which seems to have little to none structure.
 
-###Chordograms and keygrams
+###Cepstograms and self-similarity Houses In Motion
+
+```{r}
+hoi3 <- RIL2 %>% 
+    compmus_gather_timbre %>% 
+    ggplot(
+        aes(
+            x = start + duration / 2, 
+            width = duration, 
+            y = basis, 
+            fill = value)) + 
+    geom_tile() +
+    labs(x = 'Time (s)', y = NULL, fill = 'Magnitude') +
+    scale_fill_viridis_c(option = 'E') +
+    theme_classic()
+
+hoi4 <- RIL2 %>% 
+    compmus_self_similarity(timbre, 'cosine') %>% 
+    ggplot(
+        aes(
+            x = xstart + xduration / 2, 
+            width = xduration,
+            y = ystart + yduration / 2,
+            height = yduration,
+            fill = d)) + 
+    geom_tile() +
+    coord_fixed() +
+    scale_fill_viridis_c(option = 'E', guide = 'none') +
+    theme_classic() +
+    labs(x = '', y = '')
+
+grid.arrange(hoi3, hoi4, ncol=2)
+```
+
+***
+
+You can see that Houses in Motion has a MUCH clearer pattern (even a checkerboard pattern) which indicates that this song has a much clearer build-up than the ambient song 'another green world', which seems to have little to none structure.In this case I think we can state that we have found two opposites. The Another Green World song seems to has no build-up, when actually the Houses in Motion song shows some really clear patterns, indicating that Brian Eno really did know what he was doing when producing this.
+
+### Keygram Another Green World
 
 ```{r}
 circshift <- function(v, n) {if (n == 0) v else c(tail(v, n), head(v, -n))}
@@ -332,7 +324,7 @@ chord_templates <-
         'G#:min', circshift(minor_chord,    8),
         'B:7'   , circshift(seventh_chord, 11),
         'B:maj' , circshift(major_chord,   11),
-        'D#:min', circshift(minor_chord,    3),
+        'D#:min', circshift(minor_chord,    3)
 )
 
 key_templates <-
@@ -397,6 +389,12 @@ AGW3 %>%
     labs(x = 'Time (s)', y = '')
 ```
 
+***
+
+In the chordogram of another green world, we can see, again, a really vague to no pattern. Although around 22 seconds we see a clear yellow block appearing. This is probably because the song starts of really, really slow and at that moment in time the first clear tone is there. But apart from that we cannot really say anything other interesting about patterns or figures in this song.
+
+### Keygram Houses In Motion
+
 ```{r}
 RIL3 %>% 
     compmus_match_pitch_template(key_templates, 'euclidean', 'manhattan') %>% 
@@ -410,4 +408,8 @@ RIL3 %>%
 
 ***
 
-Text lalala
+Then again, when we consider the chordogram of Houses In Motion, a remarkable pattern comes back. This we have already seen in the self-similarity matrix, but this supports our statement even more. We see a prominent role for, in fact the minor, F sharp chord. This also supports what we found in our chromagram.
+
+### Did Brain Eno's solo work influence his work as a producer?
+
+Based on the analysis of mainly the tracks 'Another Green World' from his solo work and 'Houses In Motion' from the Talking Heads from his work as a producer. We could say that there is little to no similarity in any of the features we looked at. Based on just these two tracks, but regarding the fact that these two songs were very representative for both corpuses (well chosen by listening myself), we can cautiously but surely say that his solo work and his work as a producer are two worlds apart. The ambient genre which is mostly represented in his solo work corpus, brings so many unusual factors with it, mainly the unstructuredness. This provides for the finding of very little similarities between the two corpi, since the work he produces mainly fits in the picture of popular music, with its clear build-ups and catchyness. Brian Eno probably wanted to get a glimpse (even more than a glimpse, regarding the many albums he produced ánd made himself) of both worlds and even succeeded in getting the best of both.
